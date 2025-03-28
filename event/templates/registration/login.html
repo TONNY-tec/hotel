@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+    <br><br><br>
+<div class="distance">
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <div class="content-section">
+  <!-- Sign up form -->
+  <form method="POST">
+    {% csrf_token %}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">Log in</legend>
+      {{ form }}
+    </fieldset>
+    <div class="form-group">
+      <button class="btn btn-outline-info" type="submit">Login</button>
+    </div>
+  </form>
+        <br>
+         <p>
+      <a href="">
+        Forgotten your password?
+      </a>
+    </p>
+  <!-- Sign in form -->
+  <div class="border-top pt-3">
+    <p class="text-muted">
+      Do you need an account?
+      <a class="ml-2" href="{% url 'register' %}">Sign up now</a>
+    </p>
+  </div>
+</div>
+</div>
+</div>
+<div class="col-md-4"></div>
+</div>
+{% endblock content %}

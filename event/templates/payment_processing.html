@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <br><br><br>
+<div class="container mt-5">
+    <h2>Processing Payment</h2>
+    <p>We have initiated an M-Pesa STK push to your phone. Please enter your PIN to complete the payment.</p>
+    <p>Response from M-Pesa:</p>
+    <pre>{{ response_data|json|indent:4 }}</pre>
+    <p>You will receive a confirmation message from M-Pesa shortly.</p>
+    <p><strong>Do not close this page until the transaction is complete.</strong></p>
+    <a href="/" class="btn btn-secondary mt-3">Go Back to Homepage</a>
+</div>
+{% endblock %}

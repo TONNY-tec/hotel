@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+    <br><br><br>
+<div class="distance">
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        <form action="" method="POST" enctype="multipart/form-data">
+             {% csrf_token %}
+        <h3>Make your booking here</h3>
+        {{ form.as_p}}
+              <div class="d-grid gap-2">
+                  <a href="{% url 'payment_form' %}" class="btn btn-primary">Confirm</a>
+{#                  <a href="{% url 'payment_form' %}"><button class="btn btn-primary" type="submit" onclick="return confirm('You are making a post, Confirm here!')">Confirm</button></a>#}
+</div>
+        </form>
+
+    </div>
+    <div class="col-md-3"></div>
+
+</div>
+</div>
+
+{% endblock %}

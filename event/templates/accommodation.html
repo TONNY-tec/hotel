@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<!--accommodation-->
+
+    <section id="accommodation" class="accommodation section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>ACCOMMODATION<br></h2>
+        <p>Welcome to our best accommodations as you enjoy your stay</p>
+      </div><!-- End Section Title -->
+
+      <div class="container-fluid venue-gallery-container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row g-0">
+
+          <div class="col-lg-3 col-md-4">
+            <div class="venue-gallery">
+              <a href="../../static/img/event-gallery/singleroom.jpg" class="glightbox" data-gall="venue-gallery">
+                <img src="../../static/img/event-gallery/singleroom.jpg" alt="" class="img-fluid">
+              </a>
+                <center><a href="{% url 'booking' %}">
+                <h5>Single Room</h5>
+                <p>at $10 per day</p>
+                </a>
+                </center>
+
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="venue-gallery">
+              <a href="../../static/img/event-gallery/onebedroom.jpg" class="glightbox" data-gall="venue-gallery">
+                <img src="../../static/img/event-gallery/onebedroom.jpg" alt="" class="img-fluid">
+              </a>
+                <center><a href="">
+                    <h5>One Bedroom</h5>
+                    <p>at $20 per day</p>
+                </a></center>
+
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="venue-gallery">
+              <a href="../../static/img/event-gallery/bedsitter.jpg" class="glightbox" data-gall="venue-gallery">
+                <img src="../../static/img/event-gallery/bedsitter.jpg" alt="" class="img-fluid">
+              </a>
+                <center>
+                <a href="">
+                    <h5>Bedsitter</h5>
+                    <p>at $30 per day</p>
+                </a>
+                </center>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="venue-gallery">
+              <a href="../../static/img/event-gallery/twobedroom.jpg" class="glightbox" data-gall="venue-gallery">
+                <img src="../../static/img/event-gallery/twobedroom.jpg" alt="" class="img-fluid">
+              </a>
+                <center>
+                <a href="">
+                    <h5>Two Bedroom</h5>
+                    <p>at $40 per day</p>
+                </a>
+                </center>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="venue-gallery">
+              <a href="../../static/img/event-gallery/selfcontained.jpg" class="glightbox" data-gall="venue-gallery">
+                <img src="../../static/img/event-gallery/selfcontained.jpg" alt="" class="img-fluid">
+              </a>
+                <center>
+                <a href="">
+                    <h5>Self-Contained</h5>
+                    <p>at $50 per day</p>
+                </a>
+                </center>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="venue-gallery">
+              <a href="../../static/img/event-gallery/threebedroom.jpg" class="glightbox" data-gall="venue-gallery">
+                <img src="../../static/img/event-gallery/threebedroom.jpg" alt="" class="img-fluid">
+              </a>
+                <center>
+                <a href="">
+                    <h5>Three Bedroom</h5>
+                    <p>at $60 per day</p>
+                </a>
+                </center>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+    </section><!-- /Venue Section -->
+{% endblock %}
