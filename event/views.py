@@ -2,7 +2,7 @@ import base64
 from datetime import datetime
 import requests
 import os
-
+import pprint
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout
 from django.core.mail import send_mail
@@ -113,7 +113,7 @@ def get_access_token():
         print(f"Error generating access token: {e}")
         return None
 
-def initiate_stk_push(request):
+def initiate_stk_push(request,):
     if request.method == 'POST':
         form = PaymentForm(request.POST)
         if form.is_valid():
@@ -126,16 +126,16 @@ def initiate_stk_push(request):
 
             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
             password = base64.b64encode(( 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919' + timestamp).encode()).decode()
-            api_url = f"{'https://sandbox.safaricom.co.ke'}/mpesa/stkpush/v1/processrequest"
+            api_url = f"{'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'}/mpesa/stkpush/v1/processrequest"
             headers = {"Authorization": f"Bearer {access_token}"}
             payload = {
                 "BusinessShortCode": 174379,
-                "Password": password,  # Use the generated password
-                "Timestamp": timestamp,
+                "Password": 'MTc0Mzc5YmZiMjc5TliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMTYwMjE2MTY1NjI3", ',  # Use the generated password
+                "Timestamp": "20160216165627",
                 "TransactionType": "CustomerPayOnline",
                 "Amount": amount,
                 "PartyA": f"254{phone_number.lstrip('0')}",  # Customer's phone number (format: 2547XXXXXXXX)
-                "PartyB": 174379,  # Use your business shortcode here
+                "PartyB": 600000,  # Use your business shortcode here
                 "PhoneNumber": f"254{phone_number.lstrip('0')}",  # Customer's phone number
                 "CallBackURL": request.build_absolute_uri('/event/stk-callback/'), # Ensure this URL is correctly configured
                 "AccountReference": "Payment for your order",
