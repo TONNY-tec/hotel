@@ -4,7 +4,7 @@
     <br><br><br>
 <div class="container mt-5">
     <h2>Make Payment</h2>
-    <form method="post" action="{% url 'initiate_stk_push' %}">
+    <form method="post" action="{% url 'payment_processing' %}">
         {% csrf_token %}
         {% if form.errors %}
             <div class="alert alert-danger">
@@ -23,7 +23,7 @@
             {{ form.amount.label_tag }}
             {{ form.amount }}
         </div>
-        <button type="submit" class="btn btn-primary">Confirm Payment</button>
+        <a href="{% url 'payment_processing' %}" class="btn btn-primary">Pay Via Mpesa</a>
     </form>
 </div>
 {% endblock %}

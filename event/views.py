@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django_daraja.mpesa.core import MpesaClient
 
 from Scheduler import settings
 from event.forms import RegisterForm, AccommodationForm, FoodForm, PaymentForm, ContactForms
@@ -97,83 +98,24 @@ def logout_view(request):
 def payment_form(request):
     return render(request,'payment_form.html')
 
-def get_access_token():
-    consumer_key = 'GXrNmTPFPsGz7YfPVNnKPzefcDRKxywenpdO3pIpGvw494GO'
-    consumer_secret = 'tuTDN0werDZfoINHGjlqse0f1phHIk2GQ3vIRm0bkw08XqCyFGsCfNbQ04xaytAn'
-    api_url = f"{'https://sandbox.safaricom.co.ke'}/oauth/v1/generate?grant_type=client_credentials"
-    auth = base64.b64encode(f"{consumer_key}:{consumer_secret}".encode()).decode()
-    headers = {"Authorization": f"Basic {auth}"}
-    try:
-        response = requests.get(api_url, headers=headers, verify=False)
-        response.raise_for_status()
-        data = response.json()
-        access_token = data.get("access_token")
-        return access_token
-    except requests.exceptions.RequestException as e:
-        print(f"Error generating access token: {e}")
-        return None
+def payment_processing(request):
+ if request.method == 'POST':
+    form = PaymentForm(request.POST)
+    if form.is_valid():
+        # Get the phone number and amount from the form
+        phone_number = form.cleaned_data['phone_number']
+        amount = form.cleaned_data['amount']
 
-def initiate_stk_push(request,):
-    if request.method == 'POST':
-        form = PaymentForm(request.POST)
-        if form.is_valid():
-            phone_number = form.cleaned_data['phone_number']
-            amount = int(form.cleaned_data['amount'])  # Amount must be an integer
+        # Convert amount to integer (in cents)
+        amount_in_cents = int(amount * 1)  # Convert amount to cents
 
-            access_token = get_access_token()
-            if not access_token:
-                return render(request, 'payment_error.html', {'error': 'Failed to get access token'})
+        cl = MpesaClient()
+        account_reference = '@Toneyz'
+        transaction_desc = 'Description'
+        callback_url = 'https://api.darajambili.com/express-payment'
+        response = cl.stk_push(phone_number, amount_in_cents, account_reference, transaction_desc, callback_url)
+        return HttpResponse(response)
+ else:
+    form = PaymentForm()
 
-            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-            password = base64.b64encode(( 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919' + timestamp).encode()).decode()
-            api_url = f"{'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'}/mpesa/stkpush/v1/processrequest"
-            headers = {"Authorization": f"Bearer {access_token}"}
-            payload = {
-                "BusinessShortCode": 174379,
-                "Password": 'MTc0Mzc5YmZiMjc5TliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMTYwMjE2MTY1NjI3", ',  # Use the generated password
-                "Timestamp": "20160216165627",
-                "TransactionType": "CustomerPayOnline",
-                "Amount": amount,
-                "PartyA": f"254{phone_number.lstrip('0')}",  # Customer's phone number (format: 2547XXXXXXXX)
-                "PartyB": 600000,  # Use your business shortcode here
-                "PhoneNumber": f"254{phone_number.lstrip('0')}",  # Customer's phone number
-                "CallBackURL": request.build_absolute_uri('/event/stk-callback/'), # Ensure this URL is correctly configured
-                "AccountReference": "Payment for your order",
-                "TransactionDesc": "Payment for your order"
-            }
-
-            try:
-                response = requests.post(api_url, headers=headers, json=payload, verify=False)
-                response.raise_for_status()
-                data = response.json()
-                print(f"STK Push Response: {data}")
-                return render(request, 'payment_processing.html', {'response_data': data})
-            except requests.exceptions.RequestException as e:
-                print(f"Error initiating STK push: {e}")
-                return render(request, 'payment_error.html', {'error': f'Failed to initiate payment: {e}'})
-        else:
-            return render(request, 'payment_form.html', {'form': form})
-    else:
-        form = PaymentForm()
-        return render(request, 'payment_form.html', {'form': form})
-
-@csrf_exempt
-def stk_push_callback(request):
-    if request.method == 'POST':
-        try:
-            callback_data = request.body.decode('utf-8')
-            import json
-            callback_json = json.loads(callback_data)
-            print(f"STK Push Callback Received: {callback_json}")
-
-            # Process the callback data here to update your order status
-            # Example of accessing data:
-            # result_code = callback_json.get('Body', {}).get('stkCallback', {}).get('ResultCode')
-            # merchant_request_id = callback_json.get('Body', {}).get('stkCallback', {}).get('MerchantRequestID')
-
-            # You should acknowledge receipt with a 200 OK response
-            return JsonResponse({'ResultCode': 0, 'ResultDesc': 'Success'})
-        except Exception as e:
-            print(f"Error processing STK push callback: {e}")
-            return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Failed'})
-    return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Invalid Request'})
+ return render(request, 'payment_processing.html', {'form': form})
